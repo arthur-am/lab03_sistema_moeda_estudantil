@@ -64,8 +64,8 @@ O sistema foi construído utilizando uma arquitetura de microsserviços com um b
 
 2.  **Clone o repositório:**
     ```bash
-    git clone [URL_DO_SEU_REPOSITORIO]
-    cd [NOME_DO_PROJETO]
+    git clone https://github.com/arthur-am/lab03_sistema_moeda_estudantil/tree/main
+    cd /Código/
     ```
 
 3.  **Configure o banco de dados:**
