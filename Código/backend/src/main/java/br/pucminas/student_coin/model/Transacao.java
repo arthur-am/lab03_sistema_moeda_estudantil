@@ -1,4 +1,4 @@
-package br.pucminas.studentcoin.model;
+package br.pucminas.student_coin.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

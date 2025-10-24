@@ -1,4 +1,4 @@
-package br.pucminas.studentcoin.service;
+package br.pucminas.student_coin.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

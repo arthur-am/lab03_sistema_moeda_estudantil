@@ -1,7 +1,10 @@
-package br.pucminas.studentcoin.service;
+package br.pucminas.student_coin.service;
 
-import br.pucminas.studentcoin.model.Aluno;
-import br.pucminas.studentcoin.repository.AlunoRepository;
+import br.pucminas.student_coin.model.Aluno;
+import br.pucminas.student_coin.model.Transacao;
+import br.pucminas.student_coin.repository.AlunoRepository;
+import br.pucminas.student_coin.repository.TransacaoRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class AlunoService {
 
     @Autowired
     private AlunoRepository alunoRepository;
+    
+    @Autowired
+    private TransacaoRepository transacaoRepository;
 
     public List<Aluno> listarTodos() {
         return alunoRepository.findAll();
@@ -28,5 +34,9 @@ public class AlunoService {
 
     public void deletar(Long id) {
         alunoRepository.deleteById(id);
+    }
+
+    public List<Transacao> getExtrato(Long alunoId) {
+        return transacaoRepository.findByIdOrigemOrIdDestino(alunoId, alunoId);
     }
 }

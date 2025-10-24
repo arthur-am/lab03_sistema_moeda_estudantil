@@ -1,13 +1,13 @@
-package br.pucminas.studentcoin.controller;
+package br.pucminas.student_coin.controller;
 
-import br.pucminas.studentcoin.service.NegocioService;
+import br.pucminas.student_coin.service.NegocioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/negocio")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000")
 public class NegocioController {
 
     @Autowired

@@ -1,6 +1,6 @@
-package br.pucminas.studentcoin.repository;
+package br.pucminas.student_coin.repository;
 
-import br.pucminas.studentcoin.model.Transacao;
+import br.pucminas.student_coin.model.Transacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,10 +1,10 @@
-package br.pucminas.studentcoin;
+package br.pucminas.student_coin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class StudentCoinApplicationTests {
+class student_coinApplicationTests {
 
 	@Test
 	void contextLoads() {
