@@ -19,20 +19,12 @@ Este projeto é a entrega final (Sprint 03) para a disciplina de **Laboratório 
 
 ## 🛠️ Tecnologias e Arquitetura
 
-O sistema foi construído utilizando uma arquitetura de microsserviços com um backend RESTful e um frontend single-page application (SPA).
+O sistema foi construído e conteinerizado com Docker, facilitando a execução em qualquer ambiente.
 
--   **Backend:**
-    -   **Linguagem:** Java 17
-    -   **Framework:** Spring Boot (Spring Web, Spring Data JPA, Spring Mail)
-    -   **Banco de Dados:** PostgreSQL
-    -   **Build & Dependências:** Maven
-
--   **Frontend:**
-    -   **Framework:** React
-    -   **UI Library:** Material-UI (MUI)
-    -   **Comunicação API:** Axios
-
--   **Arquitetura Geral:** Model-View-Controller (MVC) no backend, com comunicação via API REST para o frontend.
+-   **Backend:** Java 17, Spring Boot, Spring Data JPA, Spring Mail, Maven.
+-   **Frontend:** React, Material-UI (MUI), Axios.
+-   **Banco de Dados:** PostgreSQL.
+-   **Ambiente:** Docker & Docker Compose.
 
 ## ✨ Funcionalidades Implementadas
 
@@ -51,50 +43,53 @@ O sistema foi construído utilizando uma arquitetura de microsserviços com um b
 -   **Gestão de Vantagens:** Publicar e gerenciar vantagens (produtos/descontos).
 -   **Validação de Cupons:** Receber notificações por email para validar os cupons de resgate.
 
-## 🚀 Como Executar o Projeto
+## 🚀 Como Executar o Projeto (com Docker)
 
-É necessário executar o Backend e o Frontend separadamente.
+Com Docker, todo o ambiente (Banco de Dados, Backend e Frontend) é configurado e iniciado com um único comando.
 
-### 1. Backend (API Java/Spring)
+### Pré-requisitos
+-   [Docker](https://www.docker.com/products/docker-desktop/) e **Docker Compose** instalados.
 
-1.  **Pré-requisitos:**
-    -   JDK 17 ou superior.
-    -   Maven 3.8 ou superior.
-    -   PostgreSQL instalado e um banco de dados criado (ex: `studentcoin_db`).
+### Passos para Execução
 
-2.  **Clone o repositório:**
+1.  **Clone o repositório:**
     ```bash
-    git clone https://github.com/arthur-am/lab03_sistema_moeda_estudantil/tree/main
-    cd /Código/
+    git clone https://github.com/arthur-am/lab03_sistema_moeda_estudantil.git
     ```
 
-3.  **Configure o banco de dados:**
-    -   Abra `src/main/resources/application.properties`.
-    -   Altere as propriedades `spring.datasource.url`, `spring.datasource.username` e `spring.datasource.password`.
-
-4.  **Execute o projeto:**
+2.  **Navegue para a raiz do projeto:**
     ```bash
-    mvn spring-boot:run
-    ```
-    A API estará disponível em `http://localhost:8080`.
-
-### 2. Frontend (App React)
-
-1.  **Pré-requisitos:**
-    -   Node.js e npm (ou Yarn).
-
-2.  **Acesse o diretório do frontend:**
-    ```bash
-    cd student-coin-frontend 
+    cd lab03_sistema_moeda_estudantil
     ```
 
-3.  **Instale as dependências:**
+3.  **Construa as imagens e inicie os containers:**
     ```bash
-    npm install
+    docker-compose up --build
     ```
+    *A primeira vez que você executar este comando pode demorar um pouco, pois o Docker precisará baixar as imagens base e construir seus aplicativos.*
 
-4.  **Execute o projeto:**
+### Acessando a Aplicação
+
+Após os containers estarem rodando, a aplicação estará disponível nos seguintes endereços:
+
+-   **Frontend (Interface do Usuário):** [http://localhost:3000](http://localhost:3000)
+-   **Backend (API):** [http://localhost:8080](http://localhost:8080)
+
+### Parando a Aplicação
+
+Para parar todos os containers, pressione `Ctrl + C` no terminal onde o `docker-compose` está rodando e depois execute:
+```bash
+docker-compose down
+```
+
+---
+
+### Próximo Passo
+
+1.  Faça as alterações no seu `application.properties`.
+2.  Salve o arquivo.
+3.  Volte para a **raiz do seu projeto** no terminal.
+4.  Execute novamente:
     ```bash
-    npm start
+    docker-compose up --build
     ```
-    A aplicação estará disponível em `http://localhost:3000` (ou outra porta, se esta estiver em uso).
