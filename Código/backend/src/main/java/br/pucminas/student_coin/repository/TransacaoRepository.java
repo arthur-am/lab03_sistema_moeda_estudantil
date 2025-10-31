@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
     List<Transacao> findByIdOrigemOrIdDestino(Long idOrigem, Long idDestino);
+    List<Transacao> findByIdOrigem(Long idOrigem);
 }

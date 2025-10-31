@@ -72,7 +72,7 @@ public class DataLoader implements CommandLineRunner {
             // 2. Criar e salvar um Aluno de teste
             Aluno aluno1 = new Aluno();
             aluno1.setNome("Ana Clara");
-            aluno1.setEmail("ana.clara@aluno.com");
+            aluno1.setEmail("arthur.mendonca.1352200@sga.pucminas.br");
             aluno1.setCpf("444.444.444-44");
             aluno1.setRg("MG-12.345.678");
             aluno1.setEndereco("Rua Fictícia, 123");

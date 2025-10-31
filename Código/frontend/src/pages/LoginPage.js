@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../services/api'; // Nosso cliente Axios pré-configurado
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import api from '../services/api';
 
-import { TextField, Button, Container, Typography, Paper, Box, Alert, CircularProgress } from '@mui/material';
-import SchoolIcon from '@mui/icons-material/School'; // Um ícone para dar um toque visual
+// Importações do Material-UI
+import { 
+  TextField, 
+  Button, 
+  Container, 
+  Typography, 
+  Paper, 
+  Box, 
+  Alert, 
+  CircularProgress,
+  Grid,
+  Link 
+} from '@mui/material';
+import SchoolIcon from '@mui/icons-material/School';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -18,7 +30,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Faz a chamada para o endpoint /api/login que implementamos no backend
+      // Faz a chamada para o endpoint /api/login
       const response = await api.post('/login', {
         email: email,
         senha: password,
@@ -26,8 +38,7 @@ export default function LoginPage() {
 
       // Se o login for bem-sucedido:
       const { userType, userData } = response.data;
-      console.log('Login bem-sucedido!', response.data);
-
+      
       // Salva os dados do usuário no localStorage para manter a sessão
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('userType', userType);
@@ -48,7 +59,7 @@ export default function LoginPage() {
       }
 
     } catch (err) {
-      // Se o backend retornar um erro (ex: 401 Unauthorized)
+      // Se o backend retornar um erro
       setError('Email ou senha inválidos. Tente novamente.');
       console.error('Erro de login:', err);
     } finally {
@@ -65,7 +76,6 @@ export default function LoginPage() {
         </Typography>
         <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
           
-          {/* Alerta de Erro */}
           {error && <Alert severity="error" sx={{ width: '100%', mb: 2 }}>{error}</Alert>}
 
           <TextField
@@ -96,11 +106,26 @@ export default function LoginPage() {
             type="submit"
             fullWidth
             variant="contained"
-            disabled={loading} // Desabilita o botão durante o carregamento
+            disabled={loading}
             sx={{ mt: 3, mb: 2 }}
           >
             {loading ? <CircularProgress size={24} color="inherit" /> : 'Entrar'}
           </Button>
+
+          {/* --- LINKS DE CADASTRO ADICIONADOS AQUI --- */}
+          <Grid container spacing={1} justifyContent="flex-end">
+            <Grid item>
+              <Link component={RouterLink} to="/cadastro/aluno" variant="body2">
+                Não tem conta? Cadastre-se como Aluno
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link component={RouterLink} to="/cadastro/empresa" variant="body2">
+                É uma empresa? Cadastre-se aqui
+              </Link>
+            </Grid>
+          </Grid>
+
         </Box>
       </Paper>
     </Container>
