@@ -59,7 +59,7 @@ Com Docker, todo o ambiente (Banco de Dados, Backend e Frontend) é configurado 
 
 2.  **Navegue para a raiz do projeto:**
     ```bash
-    cd lab03_sistema_moeda_estudantil
+    cd lab03_sistema_moeda_estudantil/Código/
     ```
 
 3.  **Construa as imagens e inicie os containers:**
