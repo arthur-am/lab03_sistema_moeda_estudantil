@@ -77,9 +77,9 @@ O sistema foi desenvolvido no contexto acadêmico da PUC Minas, visando aplicar 
 ## 🏗 Arquitetura
 O sistema segue uma arquitetura em camadas (N-Tier) no backend, aderindo ao padrão Model-View-Controller (MVC). O frontend é uma Single-Page Application (SPA) desacoplada que consome a API RESTful do backend.
 
-| Cadastro de Vantagens (Lab04S02) | Troca de Vantagens (Lab04S03) |
-| :---: | :---: |
-| ![Diagrama Cadastro de Vantagens](https://i.imgur.com/your-diagram1-link-here.png) | ![Diagrama Troca de Vantagens](https://i.imgur.com/your-diagram2-link-here.png) |
+| Cadastro de Vantagens (Lab04S02) | Listagem de Vantagens (Lab04S02) | Troca de Vantagens (Lab04S03) |
+| :---: | :---: | :---: |
+| ![Diagrama Cadastro de Vantagens](Artefatos/diagrama_sequencia_cadastro_vantagens.png) | ![Diagrama Cadastro de Vantagens](Artefatos/diagrama_seq_listagem_vantagens.png) | ![Diagrama Troca de Vantagens](Artefatos/diagrama_sequencia_troca_vantagens.png) |
 
 ---
 
