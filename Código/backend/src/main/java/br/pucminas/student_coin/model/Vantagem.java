@@ -16,6 +16,7 @@ public class Vantagem {
     @Column(length = 1000)
     private String descricao;
     
+    @Column(length = 512)
     private String urlFoto;
 
     @Column(nullable = false)

@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import api from '../services/api';
 import {
-  TextField, Button, Container, Typography, Paper, Box, Alert, Grid, Link
+  TextField, Button, Container, Typography, Paper, Box, Grid, Link, CircularProgress
 } from '@mui/material';
+import FeedbackSnackbar from '../components/FeedbackSnackbar'; // Importa o componente de feedback
 
 export default function CadastroEmpresaPage() {
   const [formData, setFormData] = useState({
@@ -12,8 +13,8 @@ export default function CadastroEmpresaPage() {
     email: '',
     senha: '',
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState({ open: false, message: '', severity: 'info' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,21 +23,27 @@ export default function CadastroEmpresaPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setLoading(true);
     try {
-      // BACKEND: Certifique-se de que você tem o endpoint POST /api/empresas
       await api.post('/empresas', formData);
-      setSuccess('Cadastro de empresa realizado com sucesso! Você será redirecionado para o login.');
-      setTimeout(() => navigate('/login'), 3000); // Redireciona após 3s
+      setFeedback({ open: true, message: 'Empresa cadastrada com sucesso! Redirecionando...', severity: 'success' });
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Erro ao realizar o cadastro. Verifique os dados.');
+      // --- LÓGICA DE EXIBIÇÃO DE ERRO ---
+      // 'err.response.data' agora conterá a mensagem específica do backend
+      // (ex: "Já existe uma empresa cadastrada com este CNPJ.")
+      const errorMessage = err.response?.data || 'Erro ao realizar o cadastro. Verifique os dados.';
+      setFeedback({ open: true, message: errorMessage, severity: 'error' });
+    } finally {
+      setLoading(false);
     }
   };
+  
+  const handleCloseFeedback = () => setFeedback({ ...feedback, open: false });
 
   return (
     <Container component="main" maxWidth="sm">
-      <Paper elevation={6} sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+      <Paper elevation={6} sx={{ my: 4, p: 4 }}>
         <Typography component="h1" variant="h4" align="center">
           Cadastre sua Empresa
         </Typography>
@@ -44,16 +51,14 @@ export default function CadastroEmpresaPage() {
           Faça parte da nossa rede de parceiros!
         </Typography>
         <Box component="form" onSubmit={handleSubmit}>
-          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-          {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
           <Grid container spacing={2}>
             <Grid item xs={12}><TextField name="nome" required fullWidth label="Nome da Empresa" onChange={handleChange} /></Grid>
             <Grid item xs={12}><TextField name="cnpj" required fullWidth label="CNPJ" onChange={handleChange} /></Grid>
             <Grid item xs={12}><TextField name="email" type="email" required fullWidth label="Email de Contato" onChange={handleChange} /></Grid>
             <Grid item xs={12}><TextField name="senha" type="password" required fullWidth label="Crie uma Senha" onChange={handleChange} /></Grid>
           </Grid>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Cadastrar Empresa
+          <Button type="submit" fullWidth variant="contained" disabled={loading} sx={{ mt: 3, mb: 2 }}>
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Cadastrar Empresa'}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
@@ -64,6 +69,13 @@ export default function CadastroEmpresaPage() {
           </Grid>
         </Box>
       </Paper>
+      {/* Componente de feedback para exibir o erro ou sucesso */}
+      <FeedbackSnackbar 
+        open={feedback.open} 
+        message={feedback.message} 
+        severity={feedback.severity} 
+        onClose={handleCloseFeedback} 
+      />
     </Container>
   );
 }
