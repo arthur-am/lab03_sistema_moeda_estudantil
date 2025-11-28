@@ -12,7 +12,7 @@
     </td>
     <td align="center">
       <div>
-        <img src="https://i.imgur.com/your-logo-link-here.png" alt="Logo StudentCoin" width="120px"/>
+        <img src="Código/frontend/src/assets/images/logo.png" alt="Logo StudentCoin" width="120px"/>
       </div>
     </td>
   </tr> 
