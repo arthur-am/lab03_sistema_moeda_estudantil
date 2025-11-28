@@ -32,7 +32,7 @@ export default function CadastroEmpresaPage() {
       // --- LÓGICA DE EXIBIÇÃO DE ERRO ---
       // 'err.response.data' agora conterá a mensagem específica do backend
       // (ex: "Já existe uma empresa cadastrada com este CNPJ.")
-      const errorMessage = err.response?.data || 'Erro ao realizar o cadastro. Verifique os dados.';
+      const errorMessage = err.response?.data || 'Erro ao realizar o cadastro. Já existe uma empresa com esse CNPJ.';
       setFeedback({ open: true, message: errorMessage, severity: 'error' });
     } finally {
       setLoading(false);
