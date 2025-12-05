@@ -1,5 +1,8 @@
 package br.pucminas.student_coin.service;
 
+import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -8,11 +11,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.internet.MimeMessage;
-
 @Service
-@Profile("dev") // Só ativa este serviço se o perfil for "dev"
+@Profile("dev")
 public class SmtpEmailService implements EmailService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SmtpEmailService.class);
 
     @Autowired
     private JavaMailSender mailSender;
@@ -31,7 +34,8 @@ public class SmtpEmailService implements EmailService {
             helper.setText(corpoHtml, true);
             mailSender.send(message);
         } catch (Exception e) {
-            System.err.println("Erro ao enviar email via SMTP: " + e.getMessage());
+            // --- LOGGING MELHORADO ---
+            logger.error("Falha ao enviar email simples via SMTP para {}", para, e);
         }
     }
 
@@ -47,7 +51,7 @@ public class SmtpEmailService implements EmailService {
             helper.addInline("qrCodeImage", new ByteArrayResource(qrCodeBytes), "image/png");
             mailSender.send(message);
         } catch (Exception e) {
-            System.err.println("Erro ao enviar email com QR Code via SMTP: " + e.getMessage());
+            logger.error("Falha ao enviar email com QR Code via SMTP para {}", para, e);
         }
     }
 }
