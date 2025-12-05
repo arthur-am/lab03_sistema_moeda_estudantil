@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vantagens")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class VantagemController {
 
     @Autowired

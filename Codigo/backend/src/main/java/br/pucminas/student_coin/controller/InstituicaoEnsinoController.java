@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/instituicoes")
-@CrossOrigin(origins = "http://localhost:3000") // Permite a comunicação com o frontend
+ // Permite a comunicação com o frontend
 public class InstituicaoEnsinoController {
 
     @Autowired

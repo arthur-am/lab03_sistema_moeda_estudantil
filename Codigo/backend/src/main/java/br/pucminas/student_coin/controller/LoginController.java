@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/login")
-@CrossOrigin(origins = "http://localhost:3000") // ou a porta do seu frontend React
+ // ou a porta do seu frontend React
 public class LoginController {
 
     @Autowired
