@@ -12,7 +12,7 @@
     </td>
     <td align="center">
       <div>
-        <img src="Código/frontend/public/images/logo.png" alt="Logo StudentCoin" width="120px"/>
+        <img src="Codigo/frontend/public/images/logo.png" alt="Logo StudentCoin" width="120px"/>
       </div>
     </td>
   </tr> 
@@ -105,7 +105,7 @@ O sistema segue uma arquitetura em camadas (N-Tier) no backend, aderindo ao padr
 * **Docker** e **Docker Compose** instalados.
 
 ### 🔑 Variáveis de Ambiente
-Antes de executar, configure seu serviço de e-mail no arquivo `Código/backend/src/main/resources/application.properties`. Para o deploy, use as variáveis de ambiente do Render.
+Antes de executar, configure seu serviço de e-mail no arquivo `Codigo/backend/src/main/resources/application.properties`. Para o deploy, use as variáveis de ambiente do Render.
 
 **Desenvolvimento Local (JavaMail/SMTP):**
 ```properties
