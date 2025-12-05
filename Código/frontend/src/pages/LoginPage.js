@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import FeedbackSnackbar from "../components/FeedbackSnackbar";
 
-// import LoginBgImage from "../assets/images/login.jpg";
+// import LoginBgImage from "../assets/images/login.png";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -59,11 +59,14 @@ export default function LoginPage() {
       {/* 1. Painel da Esquerda (Imagem de Fundo) */}
       <Grid
         item
-        xs={4}
+        // CORREÇÃO: Mudamos de 'false' para um número.
+        // Agora, em telas pequenas (xs), a imagem ocupará 3 de 12 colunas.
+        xs={3}
         sm={4}
         md={7}
         sx={{
-          backgroundImage: "url(https://picsum.photos/1920/1080)", 
+          // Use a imagem da sua pasta /public
+          backgroundImage: "url(/login.png)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
@@ -75,7 +78,7 @@ export default function LoginPage() {
       />
 
       {/* 2. Painel da Direita (Formulário) */}
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+      <Grid item xs={9} sm={8} md={5} component={Paper} elevation={6} square>
         <Box
           sx={{
             my: 8,
