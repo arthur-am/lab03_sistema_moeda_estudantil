@@ -61,12 +61,12 @@ export default function LoginPage() {
         item
         // CORREÇÃO: Mudamos de 'false' para um número.
         // Agora, em telas pequenas (xs), a imagem ocupará 3 de 12 colunas.
-        xs={3}
+        xs={false} // <- Vamos voltar ao original por enquanto
         sm={4}
         md={7}
         sx={{
           // Use a imagem da sua pasta /public
-          backgroundImage: "url(/login.png)",
+          backgroundImage: "url(https://sedu.es.gov.br/Media/sedu/_Profiles/c4d8c6e6/982b8e1d/SURURU%20(1).png?v=638635717000748020)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
