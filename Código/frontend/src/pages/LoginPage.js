@@ -17,9 +17,7 @@ import {
 } from "@mui/material";
 import FeedbackSnackbar from "../components/FeedbackSnackbar";
 
-// --- CAMINHO DE IMPORTAÇÃO CORRIGIDO ---
-// A partir de 'src/pages/', voltamos um nível para 'src/', depois entramos em 'assets/images/'
-import LoginBgImage from "../assets/images/login.jpg";
+// import LoginBgImage from "../assets/images/login.jpg";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -61,11 +59,11 @@ export default function LoginPage() {
       {/* 1. Painel da Esquerda (Imagem de Fundo) */}
       <Grid
         item
-        xs={false}
+        xs={4}
         sm={4}
         md={7}
         sx={{
-          backgroundImage: `url(${LoginBgImage})`,
+          backgroundImage: "url(https://picsum.photos/1920/1080)", 
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
