@@ -1,39 +1,22 @@
 package br.pucminas.student_coin.service;
 
-import java.util.UUID;
-
+import br.pucminas.student_coin.model.*;
+import br.pucminas.student_coin.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import br.pucminas.student_coin.model.Aluno;
-import br.pucminas.student_coin.model.Cupom;
-import br.pucminas.student_coin.model.Professor;
-import br.pucminas.student_coin.model.Transacao;
-import br.pucminas.student_coin.model.Vantagem;
-import br.pucminas.student_coin.repository.AlunoRepository;
-import br.pucminas.student_coin.repository.CupomRepository;
-import br.pucminas.student_coin.repository.ProfessorRepository;
-import br.pucminas.student_coin.repository.TransacaoRepository;
-import br.pucminas.student_coin.repository.VantagemRepository;
+import java.util.UUID;
 
 @Service
 public class NegocioService {
 
-    @Autowired
-    private ProfessorRepository professorRepository;
-    @Autowired
-    private AlunoRepository alunoRepository;
-    @Autowired
-    private TransacaoRepository transacaoRepository;
-    @Autowired
-    private VantagemRepository vantagemRepository;
-    @Autowired
-    private CupomRepository cupomRepository;
-    @Autowired
-    private QrCodeService qrCodeService;
-    @Autowired
-    private EmailService emailService;
+    @Autowired private ProfessorRepository professorRepository;
+    @Autowired private AlunoRepository alunoRepository;
+    @Autowired private TransacaoRepository transacaoRepository;
+    @Autowired private VantagemRepository vantagemRepository;
+    @Autowired private CupomRepository cupomRepository;
+    @Autowired private QrCodeService qrCodeService;
+    @Autowired private EmailService emailService;
 
     @Transactional
     public Transacao enviarMoedasPorEmail(Long professorId, String alunoEmail, double quantidade, String motivo) {
@@ -65,7 +48,7 @@ public class NegocioService {
 
         professorRepository.save(professor);
         alunoRepository.save(aluno);
-
+        
         Transacao transacao = new Transacao();
         transacao.setIdOrigem(professorId);
         transacao.setIdDestino(alunoId);
@@ -75,14 +58,14 @@ public class NegocioService {
         Transacao transacaoSalva = transacaoRepository.save(transacao);
 
         String corpoEmail = String.format(
-                "<h3>Olá %s,</h3><p>Você acabou de receber <strong>%.2f moedas</strong> do professor(a) %s.</p><p><strong>Motivo:</strong> %s</p><p>Seu saldo atual é: <strong>%.2f</strong></p>",
-                aluno.getNome(), quantidade, professor.getNome(), motivo, aluno.getSaldoMoedas()
+            "<h3>Olá %s,</h3><p>Você acabou de receber <strong>%.2f moedas</strong> do professor(a) %s.</p><p><strong>Motivo:</strong> %s</p><p>Seu saldo atual é: <strong>%.2f</strong></p>",
+            aluno.getNome(), quantidade, professor.getNome(), motivo, aluno.getSaldoMoedas()
         );
         emailService.enviarEmailSimples(aluno.getEmail(), "Você recebeu StudentCoins!", corpoEmail);
-
+        
         return transacaoSalva;
     }
-
+    
     @Transactional
     public Cupom resgatarVantagem(Long alunoId, Long vantagemId) {
         Aluno aluno = alunoRepository.findById(alunoId)
@@ -102,7 +85,7 @@ public class NegocioService {
         cupom.setVantagem(vantagem);
         cupom.setCodigo(UUID.randomUUID().toString().toUpperCase().substring(0, 8));
         cupomRepository.save(cupom);
-
+        
         Transacao transacao = new Transacao();
         transacao.setIdOrigem(alunoId);
         transacao.setIdDestino(vantagem.getEmpresaParceira().getId());
@@ -114,22 +97,41 @@ public class NegocioService {
         try {
             byte[] qrCodeBytes = qrCodeService.generateQRCodeImage(cupom.getCodigo(), 250, 250);
 
+            // --- TEMPLATE HTML ATUALIZADO E COMPLETO ---
             String corpoEmailAluno = String.format(
-                    "<h3>Vantagem Resgatada!</h3><p>Olá %s, use o código ou o QR Code abaixo para validar seu resgate:</p><h2>%s</h2>",
-                    aluno.getNome(), cupom.getCodigo()
+                "<div style='font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;'>" +
+                "<h2 style='color: #6200ea;'>Vantagem Resgatada com Sucesso!</h2>" +
+                "<p>Olá %s,</p>" +
+                "<p>Você resgatou a vantagem <strong>'%s'</strong> da empresa <strong>%s</strong>.</p>" +
+                "<hr>" +
+                "<div style='text-align: center;'>" +
+                "<p>Apresente o código ou o QR Code abaixo no estabelecimento:</p>" +
+                "<img src='%s' alt='Imagem da Vantagem' style='max-width: 100%%; height: auto; border-radius: 8px; margin-bottom: 20px;' />" +
+                // Código do Cupom
+                "<h1 style='font-size: 36px; letter-spacing: 4px; margin: 10px 0;'>%s</h1>" +
+                // QR Code (será adicionado pelo EmailService)
+                "</div>" +
+                "</div>",
+                aluno.getNome(), 
+                vantagem.getNome(), 
+                vantagem.getEmpresaParceira().getNome(),
+                vantagem.getUrlFoto() != null ? vantagem.getUrlFoto() : "https://via.placeholder.com/600x300.png?text=Vantagem+Sem+Imagem", // Usa um placeholder se não houver foto
+                cupom.getCodigo()
             );
-            emailService.enviarEmailComQrCode(aluno.getEmail(), "Seu Cupom StudentCoin!", corpoEmailAluno, qrCodeBytes);
 
+            emailService.enviarEmailComQrCode(aluno.getEmail(), "Seu Cupom StudentCoin - " + vantagem.getNome(), corpoEmailAluno, qrCodeBytes);
+
+            // E-mail para a empresa (não precisa do QR Code)
             String corpoEmailEmpresa = String.format(
-                    "<h3>Nova Vantagem Resgatada!</h3><p>O aluno <strong>%s</strong> resgatou a vantagem <strong>'%s'</strong>.</p><p>Código para conferência: <strong>%s</strong></p>",
-                    aluno.getNome(), vantagem.getNome(), cupom.getCodigo()
+                "<h3>Nova Vantagem Resgatada!</h3><p>O aluno <strong>%s</strong> resgatou a vantagem <strong>'%s'</strong>.</p><p>Código para conferência: <strong>%s</strong></p>",
+                aluno.getNome(), vantagem.getNome(), cupom.getCodigo()
             );
             emailService.enviarEmailSimples(vantagem.getEmpresaParceira().getEmail(), "Uma de suas vantagens foi resgatada!", corpoEmailEmpresa);
-
+        
         } catch (Exception e) {
             System.err.println("CRÍTICO: Falha ao gerar QR Code ou enviar email de notificação: " + e.getMessage());
         }
-
+        
         return cupom;
     }
 }

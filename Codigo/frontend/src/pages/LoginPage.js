@@ -17,8 +17,6 @@ import {
 } from "@mui/material";
 import FeedbackSnackbar from "../components/FeedbackSnackbar";
 
-// import LoginBgImage from "../assets/images/login.png";
-
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,17 +54,13 @@ export default function LoginPage() {
 
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
-      {/* 1. Painel da Esquerda (Imagem de Fundo) */}
       <Grid
         item
-        // CORREÇÃO: Mudamos de 'false' para um número.
-        // Agora, em telas pequenas (xs), a imagem ocupará 3 de 12 colunas.
-        xs={false} // <- Vamos voltar ao original por enquanto
+        xs={false}
         sm={4}
         md={7}
         sx={{
-          // Use a imagem da sua pasta /public
-          backgroundImage: "url(https://sedu.es.gov.br/Media/sedu/_Profiles/c4d8c6e6/982b8e1d/SURURU%20(1).png?v=638635717000748020)",
+          backgroundImage: 'url("https://sedu.es.gov.br/Media/sedu/_Profiles/c4d8c6e6/982b8e1d/SURURU%20(1).png?v=638635717000748020")',
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
@@ -74,11 +68,23 @@ export default function LoginPage() {
               : t.palette.grey[900],
           backgroundSize: "cover",
           backgroundPosition: "center",
+          display: { xs: "none", sm: "block" }, // Importante: Esconde no mobile para focar no login
         }}
       />
-
-      {/* 2. Painel da Direita (Formulário) */}
-      <Grid item xs={9} sm={8} md={5} component={Paper} elevation={6} square>
+      <Grid 
+        item 
+        xs={12} 
+        sm={8} 
+        md={5} 
+        component={Paper} 
+        elevation={6} 
+        square
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center' // Centraliza verticalmente o conteúdo
+        }}
+      >
         <Box
           sx={{
             my: 8,
@@ -137,7 +143,7 @@ export default function LoginPage() {
             >
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
+                label="Lembrar-me"
               />
               <Link href="#" variant="body2">
                 Esqueceu a Senha?
@@ -158,7 +164,7 @@ export default function LoginPage() {
               )}
             </Button>
             <Typography variant="body2" align="center">
-              Não Tem Uma Conta?{" "}
+              Não tem uma conta?{" "}
               <Link component={RouterLink} to="/cadastro/aluno">
                 Inscrever-se
               </Link>{" "}
@@ -170,7 +176,6 @@ export default function LoginPage() {
           </Box>
         </Box>
       </Grid>
-
       <FeedbackSnackbar
         open={feedback.open}
         message={feedback.message}
