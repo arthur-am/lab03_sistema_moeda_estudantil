@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // ELE TENTA LER A VARIÁVEL DE AMBIENTE PRIMEIRO
-  // Se não encontrar (no ambiente local), ele usa o localhost como padrão.
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
+  // Usando a sintaxe do Create React App (process.env)
+  // e o prefixo correto (REACT_APP_)
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
 });
 
 export default api;
