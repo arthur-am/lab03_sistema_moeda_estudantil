@@ -1,5 +1,11 @@
 package br.pucminas.student_coin.service;
 
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.pucminas.student_coin.model.Aluno;
 import br.pucminas.student_coin.model.Cupom;
 import br.pucminas.student_coin.model.Professor;
@@ -10,43 +16,34 @@ import br.pucminas.student_coin.repository.CupomRepository;
 import br.pucminas.student_coin.repository.ProfessorRepository;
 import br.pucminas.student_coin.repository.TransacaoRepository;
 import br.pucminas.student_coin.repository.VantagemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 public class NegocioService {
 
-    @Autowired private ProfessorRepository professorRepository;
-    @Autowired private AlunoRepository alunoRepository;
-    @Autowired private TransacaoRepository transacaoRepository;
-    @Autowired private EmailService emailService;
-    @Autowired private VantagemRepository vantagemRepository;
-    @Autowired private CupomRepository cupomRepository;
+    @Autowired
+    private ProfessorRepository professorRepository;
+    @Autowired
+    private AlunoRepository alunoRepository;
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+    @Autowired
+    private VantagemRepository vantagemRepository;
+    @Autowired
+    private CupomRepository cupomRepository;
+    @Autowired
+    private QrCodeService qrCodeService;
+    @Autowired
+    private EmailService emailService;
 
-    /**
-     * Orquestra o envio de moedas a partir do email do aluno.
-     * Este é o método que deve ser chamado pelo Controller.
-     */
     @Transactional
     public Transacao enviarMoedasPorEmail(Long professorId, String alunoEmail, double quantidade, String motivo) {
-        // Busca o aluno pelo email fornecido pelo frontend
         Aluno aluno = alunoRepository.findByEmail(alunoEmail)
                 .orElseThrow(() -> new RuntimeException("Aluno com o email '" + alunoEmail + "' não foi encontrado."));
-        
-        // Com o aluno encontrado, chama a lógica principal de negócio passando o ID do aluno
         return this.enviarMoedas(professorId, aluno.getId(), quantidade, motivo);
     }
 
-    /**
-     * Lógica principal de negócio para a transferência de moedas.
-     * Agora retorna a Transacao criada para ser usada na resposta da API.
-     */
     @Transactional
     public Transacao enviarMoedas(Long professorId, Long alunoId, double quantidade, String motivo) {
-        // 1. Validação de obrigatoriedade do motivo
         if (motivo == null || motivo.trim().isEmpty()) {
             throw new IllegalArgumentException("O motivo do envio é obrigatório.");
         }
@@ -54,26 +51,21 @@ public class NegocioService {
             throw new IllegalArgumentException("A quantidade de moedas deve ser positiva.");
         }
 
-        // 2. Busca as entidades no banco de dados
         Professor professor = professorRepository.findById(professorId)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado!"));
         Aluno aluno = alunoRepository.findById(alunoId)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado!"));
 
-        // 3. Regra de Negócio: Verificar saldo do professor
         if (professor.getSaldoMoedas() < quantidade) {
             throw new RuntimeException("Saldo insuficiente para realizar a transação.");
         }
 
-        // 4. Atualiza os saldos
         professor.setSaldoMoedas(professor.getSaldoMoedas() - quantidade);
         aluno.setSaldoMoedas(aluno.getSaldoMoedas() + quantidade);
 
-        // 5. Salva as alterações no banco
         professorRepository.save(professor);
         alunoRepository.save(aluno);
-        
-        // 6. Registra a transação para o extrato
+
         Transacao transacao = new Transacao();
         transacao.setIdOrigem(professorId);
         transacao.setIdDestino(alunoId);
@@ -82,21 +74,17 @@ public class NegocioService {
         transacao.setTipo(Transacao.TipoTransacao.ENVIO);
         Transacao transacaoSalva = transacaoRepository.save(transacao);
 
-        // 7. Requisito: Notificar aluno por email
-        String assunto = "Você recebeu StudentCoins!";
-        String texto = String.format(
-            "Olá %s,\n\nVocê acabou de receber %.2f moedas do professor(a) %s.\nMotivo: %s\n\nSeu saldo atual é: %.2f",
-            aluno.getNome(), quantidade, professor.getNome(), motivo, aluno.getSaldoMoedas()
+        String corpoEmail = String.format(
+                "<h3>Olá %s,</h3><p>Você acabou de receber <strong>%.2f moedas</strong> do professor(a) %s.</p><p><strong>Motivo:</strong> %s</p><p>Seu saldo atual é: <strong>%.2f</strong></p>",
+                aluno.getNome(), quantidade, professor.getNome(), motivo, aluno.getSaldoMoedas()
         );
-        emailService.enviarEmail(aluno.getEmail(), assunto, texto);
-        
-        // Retorna a transação que foi salva no banco
+        emailService.enviarEmailSimples(aluno.getEmail(), "Você recebeu StudentCoins!", corpoEmail);
+
         return transacaoSalva;
     }
-    
+
     @Transactional
     public Cupom resgatarVantagem(Long alunoId, Long vantagemId) {
-        // ... (seu método de resgate de vantagem, que já estava correto)
         Aluno aluno = alunoRepository.findById(alunoId)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado!"));
         Vantagem vantagem = vantagemRepository.findById(vantagemId)
@@ -114,7 +102,7 @@ public class NegocioService {
         cupom.setVantagem(vantagem);
         cupom.setCodigo(UUID.randomUUID().toString().toUpperCase().substring(0, 8));
         cupomRepository.save(cupom);
-        
+
         Transacao transacao = new Transacao();
         transacao.setIdOrigem(alunoId);
         transacao.setIdDestino(vantagem.getEmpresaParceira().getId());
@@ -123,20 +111,25 @@ public class NegocioService {
         transacao.setTipo(Transacao.TipoTransacao.RESGATE);
         transacaoRepository.save(transacao);
 
-        String assuntoAluno = "Vantagem resgatada com sucesso!";
-        String textoAluno = String.format(
-            "Olá %s,\n\nVocê resgatou a vantagem '%s'.\n\nUse o seguinte código para validação: %s",
-            aluno.getNome(), vantagem.getNome(), cupom.getCodigo()
-        );
-        emailService.enviarEmail(aluno.getEmail(), assuntoAluno, textoAluno);
+        try {
+            byte[] qrCodeBytes = qrCodeService.generateQRCodeImage(cupom.getCodigo(), 250, 250);
 
-        String assuntoParceiro = "Um cliente resgatou uma de suas vantagens!";
-        String textoParceiro = String.format(
-            "Olá %s,\n\nO aluno %s (CPF: %s) resgatou a vantagem '%s'.\n\nO código para conferência é: %s",
-            vantagem.getEmpresaParceira().getNome(), aluno.getNome(), aluno.getCpf(), vantagem.getNome(), cupom.getCodigo()
-        );
-        emailService.enviarEmail(vantagem.getEmpresaParceira().getEmail(), assuntoParceiro, textoParceiro);
-        
+            String corpoEmailAluno = String.format(
+                    "<h3>Vantagem Resgatada!</h3><p>Olá %s, use o código ou o QR Code abaixo para validar seu resgate:</p><h2>%s</h2>",
+                    aluno.getNome(), cupom.getCodigo()
+            );
+            emailService.enviarEmailComQrCode(aluno.getEmail(), "Seu Cupom StudentCoin!", corpoEmailAluno, qrCodeBytes);
+
+            String corpoEmailEmpresa = String.format(
+                    "<h3>Nova Vantagem Resgatada!</h3><p>O aluno <strong>%s</strong> resgatou a vantagem <strong>'%s'</strong>.</p><p>Código para conferência: <strong>%s</strong></p>",
+                    aluno.getNome(), vantagem.getNome(), cupom.getCodigo()
+            );
+            emailService.enviarEmailSimples(vantagem.getEmpresaParceira().getEmail(), "Uma de suas vantagens foi resgatada!", corpoEmailEmpresa);
+
+        } catch (Exception e) {
+            System.err.println("CRÍTICO: Falha ao gerar QR Code ou enviar email de notificação: " + e.getMessage());
+        }
+
         return cupom;
     }
 }

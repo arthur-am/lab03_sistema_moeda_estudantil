@@ -9,7 +9,7 @@ export default function FeedbackSnackbar({ open, message, severity, onClose }) {
       onClose={onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
     >
-      <Alert onClose={onClose} severity={severity} sx={{ width: '100%' }}>
+      <Alert onClose={onClose} severity={severity} sx={{ width: '100%' }} variant="filled">
         {message}
       </Alert>
     </Snackbar>

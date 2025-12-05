@@ -18,13 +18,17 @@ services:
   # Serviço do Backend Spring Boot
   backend:
     container_name: studentcoin_backend
-    # Este caminho já estava correto
     build: ./backend
     depends_on:
       - db
     ports:
       - "8080:8080"
     environment:
+      # --- LINHA CRUCIAL ---
+      # Ativa o perfil 'dev', fazendo o Spring usar o application-dev.properties
+      SPRING_PROFILES_ACTIVE: dev
+      
+      # Variáveis para o banco de dados (usadas pelo application-dev.properties)
       POSTGRES_DB: studentcoin_db
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
@@ -33,7 +37,6 @@ services:
   # Serviço do Frontend React (servido com Nginx)
   frontend:
     container_name: studentcoin_frontend
-    # CORREÇÃO: O caminho agora aponta para dentro da pasta 'Código'
     build: ./frontend
     ports:
       - "3000:80"
@@ -41,6 +44,6 @@ services:
       - backend
     restart: unless-stopped
 
-# Define um volume nomeado para persistir os dados do banco de dados
+# Volume para persistir os dados do banco
 volumes:
   postgres_data:

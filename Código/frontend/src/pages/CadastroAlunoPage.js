@@ -6,7 +6,7 @@ import FeedbackSnackbar from '../components/FeedbackSnackbar';
 
 export default function CadastroAlunoPage() {
   const [formData, setFormData] = useState({
-    nome: '', email: '', cpf: '', rg: '', endereco: '', curso: '', senha: '', instituicaoEnsino: ''
+    nome: '', email: '', cpf: '', rg: '', endereco: '', curso: '', senha: '', instituicaoEnsino: { id: '' }
   });
   const [instituicoes, setInstituicoes] = useState([]);
   const [feedback, setFeedback] = useState({ open: false, message: '', severity: 'info' });
@@ -48,34 +48,36 @@ export default function CadastroAlunoPage() {
   const handleCloseFeedback = () => setFeedback({ ...feedback, open: false });
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Paper elevation={6} sx={{ my: 4, p: 4 }}>
-        <Typography component="h1" variant="h4" align="center">Crie sua Conta de Aluno</Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}><TextField name="nome" required fullWidth label="Nome Completo" onChange={handleChange} /></Grid>
-            <Grid item xs={12} sm={6}><TextField name="email" type="email" required fullWidth label="Email" onChange={handleChange} /></Grid>
-            <Grid item xs={12} sm={6}><TextField name="senha" type="password" required fullWidth label="Senha" onChange={handleChange} /></Grid>
-            <Grid item xs={12} sm={6}><TextField name="cpf" required fullWidth label="CPF" onChange={handleChange} /></Grid>
-            <Grid item xs={12} sm={6}><TextField name="rg" fullWidth label="RG" onChange={handleChange} /></Grid>
-            <Grid item xs={12}><TextField name="endereco" fullWidth label="Endereço" onChange={handleChange} /></Grid>
-            <Grid item xs={12} sm={6}><TextField name="curso" required fullWidth label="Curso" onChange={handleChange} /></Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth required>
-                <InputLabel id="instituicao-label">Instituição de Ensino</InputLabel>
-                <Select labelId="instituicao-label" name="instituicaoEnsino" value={formData.instituicaoEnsino.id || ''} label="Instituição de Ensino" onChange={handleChange}>
-                  {instituicoes.map((inst) => (<MenuItem key={inst.id} value={inst.id}>{inst.nome}</MenuItem>))}
-                </Select>
-              </FormControl>
+    <Box sx={{ bgcolor: 'grey.100', minHeight: '100vh', py: 4 }}>
+      <Container component="main" maxWidth="sm">
+        <Paper elevation={4} sx={{ p: 4 }}>
+          <Typography component="h1" variant="h4" align="center" sx={{ fontWeight: 'bold' }}>Crie sua Conta de Aluno</Typography>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}><TextField name="nome" required fullWidth label="Nome Completo" onChange={handleChange} /></Grid>
+              <Grid item xs={12} sm={6}><TextField name="email" type="email" required fullWidth label="Email" onChange={handleChange} /></Grid>
+              <Grid item xs={12} sm={6}><TextField name="senha" type="password" required fullWidth label="Senha" onChange={handleChange} /></Grid>
+              <Grid item xs={12} sm={6}><TextField name="cpf" required fullWidth label="CPF" onChange={handleChange} /></Grid>
+              <Grid item xs={12} sm={6}><TextField name="rg" fullWidth label="RG" onChange={handleChange} /></Grid>
+              <Grid item xs={12}><TextField name="endereco" fullWidth label="Endereço" onChange={handleChange} /></Grid>
+              <Grid item xs={12} sm={6}><TextField name="curso" required fullWidth label="Curso" onChange={handleChange} /></Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth required>
+                  <InputLabel id="instituicao-label">Instituição de Ensino</InputLabel>
+                  <Select labelId="instituicao-label" name="instituicaoEnsino" value={formData.instituicaoEnsino.id || ''} label="Instituição de Ensino" onChange={handleChange}>
+                    {instituicoes.map((inst) => (<MenuItem key={inst.id} value={inst.id}>{inst.nome}</MenuItem>))}
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>Cadastrar</Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item><Link component={RouterLink} to="/login" variant="body2">Já tem uma conta? Faça login</Link></Grid>
-          </Grid>
-        </Box>
-      </Paper>
-      <FeedbackSnackbar open={feedback.open} message={feedback.message} severity={feedback.severity} onClose={handleCloseFeedback} />
-    </Container>
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, py: 1.5 }}>Cadastrar</Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item><Link component={RouterLink} to="/login" variant="body2">Já tem uma conta? Faça login</Link></Grid>
+            </Grid>
+          </Box>
+        </Paper>
+        <FeedbackSnackbar open={feedback.open} message={feedback.message} severity={feedback.severity} onClose={handleCloseFeedback} />
+      </Container>
+    </Box>
   );
 }
